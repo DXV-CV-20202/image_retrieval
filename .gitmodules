@@ -1,0 +1,3 @@
+[submodule "image_representation_learning"]
+	path = image_representation_learning
+	url = ../image_representation_learning.git
