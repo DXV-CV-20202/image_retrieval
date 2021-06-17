@@ -1,0 +1,23 @@
+[
+    {
+        "name": "HuMoments",
+        "extractor": "feature_extractor.HuMoments",
+        "parameters": {
+
+        }
+    },
+    {
+        "name": "SIFT",
+        "extractor": "feature_extractor.SIFT",
+        "parameters": {
+
+        }
+    },
+    {
+        "name": "HOG_CIFAR_default",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+
+        }
+    }
+]

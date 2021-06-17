@@ -1,5 +1,7 @@
-import numpy as np
 import cv2
+import numpy as np
+from numpy.core.fromnumeric import squeeze
+
 
 class FeatureExtractor:
     def __init__(self, *args, **kwargs):
@@ -36,8 +38,21 @@ class SIFT(FeatureExtractor):
         self.extractor = cv2.SIFT_create()
         self.eps = 1e-7
         self.isRootSIFT = False
-    
+        self.size = 1024
+
     def extract(self, image, *args, **kwargs):
+        kp, descriptor = self.extract_(image, *args, **kwargs)
+        kp_des = [(kp[i], descriptor[i]) for i in range(len(kp))]
+        kp_des.sort(key=lambda x: x[0].response, reverse=True)
+        if len(kp_des) > 0:
+            features = np.concatenate([d[1] for d in kp_des])
+            if features.shape[0] < 1024:
+                features = np.concatenate([features, np.zeros(1024 - features.shape[0])])
+        else:
+            features = np.zeros(1024)
+        return features[:1024]
+    
+    def extract_(self, image, *args, **kwargs):
         kp, descriptor = self.extractor.detectAndCompute(image, None)
         if self.isRootSIFT == True:
             descriptor /= (descriptor.sum(axis=1, keepdims=True) + self.eps)
@@ -56,4 +71,14 @@ class HOG(FeatureExtractor):
     
     def extract(self, image, *args, **kwargs):
         image = cv2.resize(image, self.winSize, interpolation = cv2.INTER_AREA)
-        return self.extractor.compute(image)
+        features = self.extractor.compute(image)
+        features = np.squeeze(features)
+        return features
+
+class ColorHistogram(FeatureExtractor):
+    def __init__(self, *args, nbins = 8, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.nbins = nbins
+    
+    def extract(self, image, *args, **kwargs):
+        return np.zeros(self.nbins * 3)

@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Color_Histogram",
+        "extractor": "feature_extractor.ColorHistogram",
+        "parameters": {
+
+        }
+    }
+]
