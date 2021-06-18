@@ -14,7 +14,7 @@ def multi_level_clustering(X=None, level=0, max_level=2, child_idx=0, n_clusters
     if (level < max_level):
         model['submodel'] = []
         cluster_idx = kmeans.predict(X)
-        for idx in range(n_cluster):
+        for idx in range(n_clusters):
             Xs = X[cluster_idx==idx]
             model['submodel'].append(multi_level_clustering(X=Xs, level=level+1, child_idx=idx))
     return model
