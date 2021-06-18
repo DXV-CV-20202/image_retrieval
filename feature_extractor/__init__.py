@@ -41,7 +41,7 @@ class SIFT(FeatureExtractor):
         self.size = 1024
 
     def extract(self, image, *args, **kwargs):
-        kp, descriptor = self.extract_(image, *args, **kwargs)
+        kp, descriptor = self.extract_full(image, *args, **kwargs)
         kp_des = [(kp[i], descriptor[i]) for i in range(len(kp))]
         kp_des.sort(key=lambda x: x[0].response, reverse=True)
         if len(kp_des) > 0:
@@ -52,7 +52,7 @@ class SIFT(FeatureExtractor):
             features = np.zeros(1024)
         return features[:1024]
     
-    def extract_(self, image, *args, **kwargs):
+    def extract_full(self, image, *args, **kwargs):
         kp, descriptor = self.extractor.detectAndCompute(image, None)
         if self.isRootSIFT == True:
             descriptor /= (descriptor.sum(axis=1, keepdims=True) + self.eps)
