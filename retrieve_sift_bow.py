@@ -77,8 +77,8 @@ def main(
 
         if (idx + 1) % 100 == 0:
             print(idx + 1)
-        if idx == 1000:
-            break
+        # if idx == 1000:
+        #     break
     print(time.time() - start_time)
     for n_top in list_n_top:
         print('Top %d accuracy:' % (n_top,), str(count[n_top] * 100 / total[n_top]) + '%')
