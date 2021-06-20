@@ -19,5 +19,33 @@
         "parameters": {
 
         }
+    },
+    {
+        "name": "deep_representation_l2",
+        "extractor": "feature_extractor.DeepRepresentationL2",
+        "parameters": {
+            "checkpoint": "./model/checkpoint.ckp"
+        }
+    },
+    {
+        "name": "deep_representation",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm.ckp"
+        }
+    },
+    {
+        "name": "deep_representation_2",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_128.ckp"
+        }
+    },
+    {
+        "name": "deep_representation_3",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_3.ckp"
+        }
     }
 ]

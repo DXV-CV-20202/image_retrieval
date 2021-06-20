@@ -13,7 +13,7 @@ def main(
     db_cfg_path='./config/database.json',
     connect_name='mongodb',
     extr_cfg_path='./config/feature_extractor.json',
-    list_features={'HuMoments'},
+    list_features=['HuMoments'],
     testset_path = './data/cifar-10/test.json'
     ):
 
@@ -25,14 +25,19 @@ def main(
     db = client.image_retrieval
     collection = db.image_features
     collection = collection.find()
-    # collection = list(collection)
+    collection = list(collection)
 
     with open(extr_cfg_path) as f:
         extractors_cfg = json.load(f)
+    
+    extractors_dict = dict()
+
+    for extractor_cfg in extractors_cfg:
+        extractors_dict[extractor_cfg['name']] = extractor_cfg
+
     extractors = []
-    for cfg in extractors_cfg:
-        if cfg['name'] in list_features:
-            extractors.append(create_extractor(cfg)['extractor'])
+    for ft in list_features:
+        extractors.append(create_extractor(extractors_dict[ft])['extractor'])
 
     class EuclideanDistance:
         def __init__(self) -> None:
@@ -41,45 +46,57 @@ def main(
             return np.linalg.norm(x-y)
     metric = EuclideanDistance()
 
-    matcher = ExhaustiveMatcher(features_name=list_features, extractors=extractors, collection=collection, metric=metric)
+    matcher = KDTreeMatcher(list_features=list_features, extractors=extractors, collection=collection, metric=metric)
 
     with open(testset_path) as f:
         testset_des = json.load(f)
     
     list_n_top = [1, 3, 5, 10]
+    count_success = dict()
     count = dict()
     total = dict()
     for n_top in list_n_top:
-        count[n_top] = total[n_top] = 0
+        count_success[n_top] = count[n_top] = total[n_top] = 0
     sample_count = 0
 
     start_time = time.time()
     for des in testset_des:
         image = cv2.imread(des['image_path'])
         res = matcher.match(image)
+        # print([(r[1], set(r[0]['features'])) for r in res[:1]])
 
         image_class_name = des['class_name']
+        # print(image_class_name)
 
         for n_top in list_n_top:
-            records_class_name = [r[0]['image_path'].split('/')[-2] for r in res[:n_top]]
+            records_class_name = [r[1]['image_path'].split('/')[-2] for r in res[:n_top]]
+            # print(records_class_name)
             for record_class_name in records_class_name:
                 if image_class_name == record_class_name:
                     count[n_top] += 1
+            if image_class_name in records_class_name:
+                count_success[n_top] += 1
             total[n_top] += len(records_class_name)
-
         sample_count += 1
         if sample_count % 10 == 0:
-            print(sample_count)
-        # if sample_count == 100:
+            msg = []
+            msg2 = []
+            for n_top in list_n_top:
+                msg.append(' '.join(['%d:' % (n_top,), "%.2f" % (count[n_top] * 100 / total[n_top]) + '%']))
+                msg2.append(' '.join(['%d:' % (n_top,), "%.2f" % (count_success[n_top] * 100 / sample_count) + '%']))
+            print(sample_count, 'accuracy' + '; '.join(msg), 'success:' + '; '.join(msg2))
+        # if sample_count == 10:
         #     break
+            # break
 
     print('Time:', time.time() - start_time)
     for n_top in list_n_top:
         print('Top %d accuracy:' % (n_top,), str(count[n_top] * 100 / total[n_top]) + '%')
+        print('Top %d success:' % (n_top,), str(count_success[n_top] * 100 / sample_count) + '%')
 
 class Matcher:
-    def __init__(self, *args, features_name=[], extractors=[], collection=None, metric=None, **kwargs):
-        self.features_name = features_name
+    def __init__(self, *args, list_features=[], extractors=[], collection=None, metric=None, **kwargs):
+        self.list_features = list_features
         self.extractors = extractors
         self.collection = collection
         self.metric = metric
@@ -90,7 +107,7 @@ class Matcher:
         return features
 
     def get_record_features(self, record):
-        features = [record['features'][ft] for ft in self.features_name]
+        features = [record['features'][ft] for ft in self.list_features]
         features = np.concatenate(features)
         return features
     
@@ -98,8 +115,8 @@ class Matcher:
         pass
 
 class ExhaustiveMatcher(Matcher):
-    def __init__(self, *args, features_name=[], extractors=[], collection=None, metric=None, **kwargs):
-        super().__init__(*args, features_name=features_name, extractors=extractors, collection=collection, metric=metric, **kwargs)
+    def __init__(self, *args, list_features=[], extractors=[], collection=None, metric=None, **kwargs):
+        super().__init__(*args, list_features=list_features, extractors=extractors, collection=collection, metric=metric, **kwargs)
     
     def match(self, image, *args, ntop=10, **kwargs):
         features = self.get_features(image)
@@ -107,9 +124,9 @@ class ExhaustiveMatcher(Matcher):
         for record in self.collection:
             record_features = self.get_record_features(record)
             distance = self.metric.calculate_distance(features, record_features)
-            res.append((record, distance))
+            res.append((distance, record))
             idx = len(res) - 1
-            while(idx > 0) and (distance < res[idx-1][1]):
+            while(idx > 0) and (distance < res[idx-1][0]):
                 res[idx], res[idx-1] = res[idx-1], res[idx]
                 idx -= 1
             if len(res) > ntop:
@@ -117,16 +134,19 @@ class ExhaustiveMatcher(Matcher):
         return res
 
 class KDTreeMatcher(Matcher):
-    def __init__(self, *args, features_name=[], extractors=[], collection=None, metric=None, **kwargs):
-        super().__init__(*args, features_name=features_name, extractors=extractors, collection=collection, metric=metric **kwargs)
-        self.kd_tree = KDTree([record['features']['SIFT'] for record in collection])
+    def __init__(self, *args, list_features=[], extractors=[], collection=None, metric=None, **kwargs):
+        super().__init__(*args, list_features=list_features, extractors=extractors, collection=collection, metric=metric, **kwargs)
+        self.kd_tree = KDTree([self.get_record_features(record) for record in collection])
 
     def match(self, image, *args, ntop=10, **kwargs):
         features = self.get_features(image)
         dd, ii = self.kd_tree.query([features], k=ntop)
         dd = dd[0]
         ii = ii[0]
-        res = [(self.collection[ii[i]], dd[i]) for i in range(len(ii))]
+        # print(dd)
+        # print(ii)
+        n = len(ii)
+        res = [(dd[i], self.collection[ii[i]]) for i in range(n)]
         return res
 
 if __name__ == '__main__':

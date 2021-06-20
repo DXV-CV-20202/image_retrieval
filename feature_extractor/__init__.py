@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
 from numpy.core.fromnumeric import squeeze
+import torch
+import torchvision
+import sys
+sys.path.append("..")
+from image_representation_learning.networks import EmbeddingNet, EmbeddingNetL2, TripletNet
 
 
 class FeatureExtractor:
@@ -82,3 +87,53 @@ class ColorHistogram(FeatureExtractor):
     
     def extract(self, image, *args, **kwargs):
         return np.zeros(self.nbins * 3)
+
+class DeepRepresentation(FeatureExtractor):
+    def __init__(self, checkpoint, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        embedding_net = EmbeddingNet()
+        model = TripletNet(embedding_net)
+        if torch.cuda.is_available():
+            model.cuda()
+        model.load_state_dict(torch.load(checkpoint, map_location=torch.device('cpu')))
+        self.model = model
+        self.mean = (0.1307,) 
+        self.std = (0.3081,)
+        self.transforms = torchvision.transforms.Compose([
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(self.mean, self.std)
+        ])
+    
+    def extract(self, image, *args, **kwargs):
+        image = self.transforms(image)
+        image.unsqueeze_(0)
+        features = self.model.get_embedding(image)
+        features = features[0]
+        features = features.tolist()
+        features = np.array(features)
+        return features
+
+class DeepRepresentationL2(FeatureExtractor):
+    def __init__(self, checkpoint, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        embedding_net = EmbeddingNetL2()
+        model = TripletNet(embedding_net)
+        if torch.cuda.is_available():
+            model.cuda()
+        model.load_state_dict(torch.load(checkpoint, map_location=torch.device('cpu')))
+        self.model = model
+        self.mean = (0.1307,) 
+        self.std = (0.3081,)
+        self.transforms = torchvision.transforms.Compose([
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(self.mean, self.std)
+        ])
+    
+    def extract(self, image, *args, **kwargs):
+        image = self.transforms(image)
+        image.unsqueeze_(0)
+        features = self.model.get_embedding(image)
+        features = features[0]
+        features = features.tolist()
+        features = np.array(features)
+        return features

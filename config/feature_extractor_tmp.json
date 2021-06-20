@@ -1,0 +1,9 @@
+[
+    {
+        "name": "deep_representation_3",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_3.ckp"
+        }
+    }
+]

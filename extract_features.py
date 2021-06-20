@@ -6,8 +6,10 @@ import pymongo
 
 from ir_utils import *
 
+import time
 
-def extract_and_save(dataset='./data/cifar-10/train.json', extractor_config='./config/feature_extractor.json', database_config='./config/database.json'):
+
+def extract_and_save(dataset='./data/cifar-10/train.json', extractor_config='./config/feature_extractor_tmp.json', database_config='./config/database.json'):
     with open(database_config) as f:
         db_config = json.load(f)
     mongodb_config = db_config['mongodb']
@@ -21,29 +23,41 @@ def extract_and_save(dataset='./data/cifar-10/train.json', extractor_config='./c
         extractors.append(create_extractor(c))
     with open(dataset) as f:
         images = json.load(f)
-    for ind, i in enumerate(images):
-        image = read_image_from_config(i)
+    
+    # images = list(reversed(images))
+    tmp_img = []
+    start_time = time.time()
+    last_time = start_time
+    for ind, img in enumerate(images):
+        image = read_image_from_config(img)
+        i = deepcopy(img)
         i['features'] = {}
+        tmp_img.append(i)
         for extractor in extractors:
             i['features'][extractor['config']['name']] = extractor['extractor'].extract(image).tolist()
         if (ind + 1) % 100 == 0:
-            print(ind + 1, '/', len(images))
+            cur_time = time.time()
+            print(ind + 1, '/', len(images), "- %fs" % (cur_time - last_time))
+            last_time = cur_time
             requests = []
-            for img in images[ind-99:ind+1]:
+            for img in tmp_img:
                 _set = dict()
                 for ft in img['features']:
                     _set['features.'+ft] = img['features'][ft]
                 requests.append({
                     'filter': {
-                        'image_path': img['image_path']
+                        'image_path': {"$eq": img['image_path']}
                     },
                     'update': {
                         '$set': _set
                     }
                 })
             requests = [pymongo.UpdateOne(r['filter'], r['update'], upsert=True) for r in requests]
-            x = col.bulk_write(requests)
-            # x = col.insert_many(images[ind-99:ind+1])
+            tt = time.time()
+            col.bulk_write(requests)
+            print(time.time() - tt)
+            tmp_img = []
+    print(time.time() - start_time)
 
 
 if __name__ == '__main__':
