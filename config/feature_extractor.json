@@ -47,5 +47,12 @@
         "parameters": {
             "checkpoint": "./model/checkpoint_no_norm_3.ckp"
         }
+    },
+    {
+        "name": "deep_representation_4",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_4.ckp"
+        }
     }
 ]

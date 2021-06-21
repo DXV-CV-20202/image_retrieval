@@ -13,7 +13,7 @@ def main(
     db_cfg_path='./config/database.json',
     connect_name='mongodb',
     extr_cfg_path='./config/feature_extractor.json',
-    list_features=['HuMoments'],
+    list_features=['deep_representation_4'],
     testset_path = './data/cifar-10/test.json'
     ):
 
@@ -51,14 +51,26 @@ def main(
     with open(testset_path) as f:
         testset_des = json.load(f)
     
+    all_classes = [
+        'airplane', 'automobile', 'bird', 'cat',
+        'deer', 'dog', 'frog', 'horse',
+        'ship', 'truck'
+    ]
     list_n_top = [1, 3, 5, 10]
     count_success = dict()
     count = dict()
     total = dict()
+    confusion_matrix = dict()
     for n_top in list_n_top:
         count_success[n_top] = count[n_top] = total[n_top] = 0
+        confusion_matrix[n_top] = dict()
+        for c1 in all_classes:
+            confusion_matrix[n_top][c1] = dict()
+            for c2 in all_classes:
+                confusion_matrix[n_top][c1][c2] = 0
     sample_count = 0
 
+    print('start')
     start_time = time.time()
     for des in testset_des:
         image = cv2.imread(des['image_path'])
@@ -72,6 +84,7 @@ def main(
             records_class_name = [r[1]['image_path'].split('/')[-2] for r in res[:n_top]]
             # print(records_class_name)
             for record_class_name in records_class_name:
+                confusion_matrix[n_top][image_class_name][record_class_name] += 1
                 if image_class_name == record_class_name:
                     count[n_top] += 1
             if image_class_name in records_class_name:
@@ -93,6 +106,16 @@ def main(
     for n_top in list_n_top:
         print('Top %d accuracy:' % (n_top,), str(count[n_top] * 100 / total[n_top]) + '%')
         print('Top %d success:' % (n_top,), str(count_success[n_top] * 100 / sample_count) + '%')
+
+    n_top = 10
+    print()
+    for c2 in all_classes:
+        print('%12s' % c2, end='')
+    print()
+    for c1 in all_classes:
+        for c2 in all_classes:
+            print('%12s' % int(confusion_matrix[n_top][c1][c2]), end='')
+        print()
 
 class Matcher:
     def __init__(self, *args, list_features=[], extractors=[], collection=None, metric=None, **kwargs):
