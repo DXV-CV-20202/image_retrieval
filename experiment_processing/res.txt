@@ -1,0 +1,57 @@
+15:13
+
+{"image_path": {"$eq": true}}
+
+deep_representation_3
+Time: 226.28929018974304
+Top 1 accuracy: 49.68%
+Top 1 success: 49.68%
+Top 3 accuracy: 48.29%
+Top 3 success: 71.4%
+Top 5 accuracy: 47.784%
+Top 5 success: 79.7%
+Top 10 accuracy: 46.904%
+Top 10 success: 87.67%
+
+Time: 210.30831837654114
+Top 1 accuracy: 49.38%
+Top 1 success: 49.38%
+Top 3 accuracy: 48.156666666666666%
+Top 3 success: 71.35%
+Top 5 accuracy: 47.638%
+Top 5 success: 79.18%
+Top 10 accuracy: 46.937%
+Top 10 success: 87.79%
+
+HOG
+Time: 79.89737582206726
+Top 1 accuracy: 35.92%
+Top 1 success: 35.92%
+Top 3 accuracy: 33.776666666666664%
+Top 3 success: 60.98%
+Top 5 accuracy: 32.858%
+Top 5 success: 72.82%
+Top 10 accuracy: 31.418%
+Top 10 success: 85.08%
+
+HuMoments
+Time: 10.330261468887329
+Top 1 accuracy: 13.38%
+Top 1 success: 13.38%
+Top 3 accuracy: 13.296666666666667%
+Top 3 success: 33.68%
+Top 5 accuracy: 13.106%
+Top 5 success: 48.01%
+Top 10 accuracy: 13.041%
+Top 10 success: 70.2%
+
+SIFT
+Time: 1367.3090333938599
+Top 1 accuracy: 19.65%
+Top 1 success: 19.65%
+Top 3 accuracy: 18.216666666666665%
+Top 3 success: 41.51%
+Top 5 accuracy: 17.818%
+Top 5 success: 55.3%
+Top 10 accuracy: 17.029%
+Top 10 success: 74.39%

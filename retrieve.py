@@ -13,7 +13,7 @@ def main(
     db_cfg_path='./config/database.json',
     connect_name='mongodb',
     extr_cfg_path='./config/feature_extractor.json',
-    list_features=['deep_representation_4'],
+    list_features=['deep_representation_resnet_1'],
     testset_path = './data/cifar-10/test.json'
     ):
 
@@ -24,7 +24,12 @@ def main(
     client = pymongo.MongoClient(**db_config)
     db = client.image_retrieval
     collection = db.image_features
-    collection = collection.find()
+    fields = {
+        'image_path': 1
+    }
+    for ft in list_features:
+        fields['features.' + ft] = 1
+    collection = collection.find({}, fields)
     collection = list(collection)
 
     with open(extr_cfg_path) as f:

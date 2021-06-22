@@ -54,5 +54,12 @@
         "parameters": {
             "checkpoint": "./model/checkpoint_no_norm_4.ckp"
         }
+    },
+    {
+        "name": "deep_representation_resnet_1",
+        "extractor": "feature_extractor.DeepRepresentationResNet",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_resnet_1.ckp"
+        }
     }
 ]
