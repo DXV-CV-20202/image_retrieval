@@ -5,9 +5,9 @@ import shutil
 import itertools
 import random
 
-cifar10 = './cifar-10'
-coil100 = './coil-100'
-caltech101 = './caltech-101'
+cifar10 = './data/cifar-10'
+coil100 = './data/coil-100'
+caltech101 = './data/caltech-101'
 
 # dataset_path la 1 trong 3 bien o tren
 # ratio la ti le train:test

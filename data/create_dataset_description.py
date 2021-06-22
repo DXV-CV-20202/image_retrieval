@@ -5,9 +5,9 @@ import shutil
 import itertools
 import cv2
 
-cifar10 = './cifar-10'
-coil100 = './coil-100'
-caltech101 = './caltech-101'
+cifar10 = './data/cifar-10'
+coil100 = './data/coil-100'
+caltech101 = './data/caltech-101'
 
 def create_image_description(dataset=None, subdataset=None, image_path=None, size=None, class_name=None):
     return {
