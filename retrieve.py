@@ -78,7 +78,7 @@ def main(
     print('start')
     start_time = time.time()
     for des in testset_des:
-        image = cv2.imread(des['image_path'])
+        image = read_image_from_config(des, dataset=testset_path.split('/')[-2])
         res = matcher.match(image)
         # print([(r[1], set(r[0]['features'])) for r in res[:1]])
 

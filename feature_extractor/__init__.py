@@ -81,12 +81,28 @@ class HOG(FeatureExtractor):
         return features
 
 class ColorHistogram(FeatureExtractor):
-    def __init__(self, *args, nbins = 8, **kwargs):
+    def __init__(self, *args, nbins = 8, type='RGB', **kwargs):
         super().__init__(*args, **kwargs)
         self.nbins = nbins
+        self.type = type
     
     def extract(self, image, *args, **kwargs):
-        return np.zeros(self.nbins * 3)
+        if self.type == 'HSV':
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            histograms  = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 180, 0, 256, 0, 256])
+            cv2.normalize(histograms, histograms)
+            return histograms.flatten()
+        elif self.type == 'RGB':
+            b, g, r = cv2.split(image)
+            rgb_hist = np.zeros((768,1), dtype='uint32')
+            b_hist = cv2.calcHist([b], [0], None, [256], [0, 256])
+            g_hist = cv2.calcHist([g], [0], None, [256], [0, 256])
+            r_hist = cv2.calcHist([r], [0], None, [256], [0, 256])
+            rgb_hist = np.array([r_hist, g_hist, b_hist])
+            cv2.normalize(rgb_hist, rgb_hist)
+            return rgb_hist.flatten()
+        else:
+            return np.zeros(self.nbins * 3)
 
 class DeepRepresentation(FeatureExtractor):
     def __init__(self, checkpoint, *args, **kwargs):

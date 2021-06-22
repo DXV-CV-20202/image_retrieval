@@ -10,6 +10,8 @@ import time
 
 
 def extract_and_save(dataset='./data/cifar-10/train.json', extractor_config='./config/feature_extractor_tmp.json', database_config='./config/database.json'):
+    dataset_name = dataset.split('/')[-2]
+    
     with open(database_config) as f:
         db_config = json.load(f)
     mongodb_config = db_config['mongodb']
@@ -29,7 +31,7 @@ def extract_and_save(dataset='./data/cifar-10/train.json', extractor_config='./c
     start_time = time.time()
     last_time = start_time
     for ind, img in enumerate(images):
-        image = read_image_from_config(img)
+        image = read_image_from_config(img, dataset=dataset_name)
         i = deepcopy(img)
         i['features'] = {}
         tmp_img.append(i)

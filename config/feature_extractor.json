@@ -21,6 +21,46 @@
         }
     },
     {
+        "name": "HOG_CIFAR_8x8x16x16",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [8, 8],
+            "blockSize": [16, 16]
+        }
+    },
+    {
+        "name": "HOG_CIFAR_4x4x8x8",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [4, 4],
+            "blockSize": [8, 8]
+        }
+    },
+    {
+        "name": "HOG_CIFAR_4x4x16x16",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [4, 4],
+            "blockSize": [16, 16]
+        }
+    },
+    {
+        "name": "Color_Histogram_RGB",
+        "extractor": "feature_extractor.ColorHistogram",
+        "parameters": {
+            "nbins": 8,
+            "type": "RGB"
+        }
+    },
+    {
+        "name": "Color_Histogram_HSV",
+        "extractor": "feature_extractor.ColorHistogram",
+        "parameters": {
+            "nbins": 8,
+            "type": "HSV"
+        }
+    },
+    {
         "name": "deep_representation_l2",
         "extractor": "feature_extractor.DeepRepresentationL2",
         "parameters": {
