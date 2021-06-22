@@ -1,9 +1,9 @@
 [
     {
-        "name": "deep_representation_3",
-        "extractor": "feature_extractor.DeepRepresentation",
+        "name": "deep_representation_resnet_1",
+        "extractor": "feature_extractor.DeepRepresentationResNet",
         "parameters": {
-            "checkpoint": "./model/checkpoint_no_norm_3.ckp"
+            "checkpoint": "./model/checkpoint_resnet_1.ckp"
         }
     }
 ]
