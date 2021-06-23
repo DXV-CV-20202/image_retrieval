@@ -23,10 +23,8 @@
     + Modifying metric class (ex: `class EuclideanDistance`).
     + Modifying list of features and list of extractors that you want the system to be insterested in.
 
-## Start user interface
+## Start Web UI
 - Run `python3 app.py [args]` to start the server.
 - Arguments:
     * ```-i, --ip```: Defaults to ```localhost```
     * ```-o, --port```: Defaults to ```5000```
-    * ```--input```: Defaults to ```videos/bolt-multi-size-detection.mp4```
-    * ```--algo```: (KNN, MOG2). Defaults to ```MOG2```
