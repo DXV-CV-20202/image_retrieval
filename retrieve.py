@@ -49,6 +49,16 @@ def main(
             pass
         def calculate_distance(self, x, y):
             return np.linalg.norm(x-y)
+
+    class HistogramComparison:
+        def __init__(self, compare_method=0) -> None:
+            self.compare_method = compare_method
+
+        def calculate_distance(self, x, y):
+            x = np.array(x, dtype=np.float32)
+            y = np.array(y, dtype=np.float32)
+            return cv2.compareHist(x, y, self.compare_method)
+    
     metric = EuclideanDistance()
 
     matcher = KDTreeMatcher(list_features=list_features, extractors=extractors, collection=collection, metric=metric)
