@@ -68,4 +68,4 @@ def create_dataset(dataset_path='', ratio=1):
 
 
 if __name__ == '__main__':
-    create_dataset(dataset_path=coil100, ratio=0.8)
+    create_dataset(dataset_path=caltech101 , ratio=0.8)
