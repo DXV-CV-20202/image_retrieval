@@ -72,4 +72,4 @@ def create_dataset_description(dataset_path=''):
 
 
 if __name__ == '__main__':
-    create_dataset_description(dataset_path=coil100)
+    create_dataset_description(dataset_path=caltech101)
