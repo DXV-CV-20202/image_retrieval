@@ -15,10 +15,18 @@
     + Features Extractors (ex: `./config/feature_extractor.json`).
     + Dataset (ex: `./data/cifar-10/train.json`).
 - You can also update images features collect (adding, updating, removing,...) by modifying configuration files and running this script again.
-## Retrieve images
-- Running `python retrieve.py` to test image retrieval.
+## Run tests
+- Run `python retrieve.py` to test image retrieval.
 - Like `extract_features` script, you can also modify some configuration files to change behavior of this script.
 - You can modify matching stragies and rules by:
     + Extending class `Matcher`.
     + Modifying metric class (ex: `class EuclideanDistance`).
     + Modifying list of features and list of extractors that you want the system to be insterested in.
+
+## Start user interface
+- Run `python3 app.py [args]` to start the server.
+- Arguments:
+    * ```-i, --ip```: Defaults to ```localhost```
+    * ```-o, --port```: Defaults to ```5000```
+    * ```--input```: Defaults to ```videos/bolt-multi-size-detection.mp4```
+    * ```--algo```: (KNN, MOG2). Defaults to ```MOG2```
