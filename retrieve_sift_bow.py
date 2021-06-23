@@ -35,18 +35,25 @@ def main(
     with open(testset_path) as f:
         testset_des = json.load(f)
     extractor = SIFT()
-    list_n_top = [1, 3, 5, 10]
-    count = dict()
-    total = dict()
-    for n_top in list_n_top:
-        count[n_top] = total[n_top] = 0
-    sample_count = 0
 
+    all_classes = [
+        'airplane', 'automobile', 'bird', 'cat',
+        'deer', 'dog', 'frog', 'horse',
+        'ship', 'truck'
+    ]
     list_n_top = [1, 3, 5, 10]
+    count_success = dict()
     count = dict()
     total = dict()
+    confusion_matrix = dict()
     for n_top in list_n_top:
-        count[n_top] = total[n_top] = 0
+        count_success[n_top] = count[n_top] = total[n_top] = 0
+        confusion_matrix[n_top] = dict()
+        for c1 in all_classes:
+            confusion_matrix[n_top][c1] = dict()
+            for c2 in all_classes:
+                confusion_matrix[n_top][c1][c2] = 0
+    sample_count = 0
 
     start_time = time.time()
     for idx, des in enumerate(testset_des):
@@ -70,18 +77,38 @@ def main(
         image_class_name = des['class_name']
         for n_top in list_n_top:
             records_class_name = [r[0].split('/')[-2] for r in res[:n_top]]
+            # print(records_class_name)
             for record_class_name in records_class_name:
+                confusion_matrix[n_top][image_class_name][record_class_name] += 1
                 if image_class_name == record_class_name:
                     count[n_top] += 1
+            if image_class_name in records_class_name:
+                count_success[n_top] += 1
             total[n_top] += len(records_class_name)
 
-        if (idx + 1) % 100 == 0:
-            print(idx + 1)
-        # if idx == 1000:
+        sample_count += 1
+        if sample_count % 100 == 0:
+            msg = []
+            msg2 = []
+            for n_top in list_n_top:
+                msg.append(' '.join(['%d:' % (n_top,), "%.2f" % (count[n_top] * 100 / total[n_top]) + '%']))
+                msg2.append(' '.join(['%d:' % (n_top,), "%.2f" % (count_success[n_top] * 100 / sample_count) + '%']))
+            print(sample_count, 'accuracy' + '; '.join(msg), 'success:' + '; '.join(msg2))
+        # if idx == 400:
         #     break
-    print(time.time() - start_time)
+    print('Time:', time.time() - start_time)
     for n_top in list_n_top:
         print('Top %d accuracy:' % (n_top,), str(count[n_top] * 100 / total[n_top]) + '%')
+        print('Top %d success:' % (n_top,), str(count_success[n_top] * 100 / sample_count) + '%')
 
+    n_top = 10
+    print()
+    for c2 in all_classes:
+        print('%12s' % c2, end='')
+    print()
+    for c1 in all_classes:
+        for c2 in all_classes:
+            print('%12s' % int(confusion_matrix[n_top][c1][c2]), end='')
+        print()
 if __name__ == '__main__':
     main()
