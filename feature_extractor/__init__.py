@@ -65,7 +65,7 @@ class SIFT(FeatureExtractor):
         return kp, descriptor
 
 class HOG(FeatureExtractor):
-    def __init__(self, *args, winSize=(32, 32), blockSize=(32, 32), blockStride=(2, 2), cellSize=(16, 16), nbins=9, **kwargs):
+    def __init__(self, *args, winSize=(32, 32), blockSize=(32, 32), blockStride=(16, 16), cellSize=(16, 16), nbins=9, **kwargs):
         super().__init__(*args, **kwargs)
         self.winSize = winSize # Image size
         self.blockSize = blockSize # multiple of cell size, for histogram normalization

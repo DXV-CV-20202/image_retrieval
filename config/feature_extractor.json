@@ -17,7 +17,9 @@
         "name": "HOG_CIFAR_default",
         "extractor": "feature_extractor.HOG",
         "parameters": {
-
+            "cellSize": [16, 16],
+            "blockSize": [32, 32],
+            "blockStride": [16, 16]
         }
     },
     {
@@ -25,7 +27,8 @@
         "extractor": "feature_extractor.HOG",
         "parameters": {
             "cellSize": [8, 8],
-            "blockSize": [16, 16]
+            "blockSize": [16, 16],
+            "blockStride": [8, 8]
         }
     },
     {
@@ -33,7 +36,8 @@
         "extractor": "feature_extractor.HOG",
         "parameters": {
             "cellSize": [4, 4],
-            "blockSize": [8, 8]
+            "blockSize": [8, 8],
+            "blockStride": [4, 4]
         }
     },
     {
@@ -41,7 +45,8 @@
         "extractor": "feature_extractor.HOG",
         "parameters": {
             "cellSize": [4, 4],
-            "blockSize": [16, 16]
+            "blockSize": [16, 16],
+            "blockStride": [8, 8]
         }
     },
     {
