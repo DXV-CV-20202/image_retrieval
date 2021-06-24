@@ -22,3 +22,6 @@
     + Extending class `Matcher`.
     + Modifying metric class (ex: `class EuclideanDistance`).
     + Modifying list of features and list of extractors that you want the system to be insterested in.
+
+## Web UI
+- Running `python app.py` to test image retrival with web UI
