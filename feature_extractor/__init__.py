@@ -28,6 +28,7 @@ class HuMoments(FeatureExtractor):
         super().__init__(*args, **kwargs)
     
     def extract(self, image, *args, **kwargs):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         shape = image.shape
         if len(shape) > 2:
             image = np.average(image, axis=tuple(range(2, len(shape))))
@@ -58,6 +59,7 @@ class SIFT(FeatureExtractor):
         return features[:1024]
     
     def extract_full(self, image, *args, **kwargs):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         kp, descriptor = self.extractor.detectAndCompute(image, None)
         if self.isRootSIFT == True:
             descriptor /= (descriptor.sum(axis=1, keepdims=True) + self.eps)
@@ -75,6 +77,7 @@ class HOG(FeatureExtractor):
         self.extractor = cv2.HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins)
     
     def extract(self, image, *args, **kwargs):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image = cv2.resize(image, self.winSize, interpolation = cv2.INTER_AREA)
         features = self.extractor.compute(image)
         features = np.squeeze(features)
