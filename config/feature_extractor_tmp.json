@@ -17,7 +17,36 @@
         "name": "HOG_CIFAR_default",
         "extractor": "feature_extractor.HOG",
         "parameters": {
-
+            "cellSize": [16, 16],
+            "blockSize": [32, 32],
+            "blockStride": [16, 16]
+        }
+    },
+    {
+        "name": "HOG_CIFAR_8x8x16x16",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [8, 8],
+            "blockSize": [16, 16],
+            "blockStride": [8, 8]
+        }
+    },
+    {
+        "name": "HOG_CIFAR_4x4x8x8",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [4, 4],
+            "blockSize": [8, 8],
+            "blockStride": [4, 4]
+        }
+    },
+    {
+        "name": "HOG_CIFAR_4x4x16x16",
+        "extractor": "feature_extractor.HOG",
+        "parameters": {
+            "cellSize": [4, 4],
+            "blockSize": [16, 16],
+            "blockStride": [8, 8]
         }
     },
     {
@@ -34,6 +63,34 @@
         "parameters": {
             "nbins": 8,
             "type": "HSV"
+        }
+    },
+    {
+        "name": "deep_representation_l2",
+        "extractor": "feature_extractor.DeepRepresentationL2",
+        "parameters": {
+            "checkpoint": "./model/checkpoint.ckp"
+        }
+    },
+    {
+        "name": "deep_representation",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm.ckp"
+        }
+    },
+    {
+        "name": "deep_representation_2",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_128.ckp"
+        }
+    },
+    {
+        "name": "deep_representation_3",
+        "extractor": "feature_extractor.DeepRepresentation",
+        "parameters": {
+            "checkpoint": "./model/checkpoint_no_norm_3.ckp"
         }
     },
     {
