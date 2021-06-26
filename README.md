@@ -25,3 +25,6 @@
 
 ## Web UI
 - Running `python app.py` to test image retrival with web UI
+
+## Data
+https://drive.google.com/drive/folders/1_QjmZp7_qvs9D4wS6NhUfbEhC8ztadx3?usp=sharing
